@@ -1,0 +1,7 @@
+#Tools
+autopep8
+mypy
+flake8
+
+#Database
+aiosqlite==0.18.0
