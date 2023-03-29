@@ -6,12 +6,16 @@ from sqlalchemy.exc import IntegrityError
 
 from starlette.concurrency import run_in_threadpool
 
+from core.settings import settings
 from core.jwt import generate_token
+from core.jwt import update_access_token
+from core.jwt import get_user_id_token
 from core.security import verify_password
 from core.security import get_password_hash
 
 from modules.database.models import Users
 from modules.database.orm.user import insert_user
+from modules.database.orm.user import get_current_user
 from modules.database.orm.user import get_user_by_username
 
 
@@ -42,6 +46,34 @@ async def create_user(username: str, email: str, password: str, session: AsyncSe
     """
     hashed_password = await run_in_threadpool(get_password_hash, password)
     try:
-        await insert_user(session, username=username, email=email, password=hashed_password)
+        await insert_user(
+            session,
+            username=username,
+            email=email,
+            password=hashed_password,
+            role_id=settings.USER_ROLE_ID
+        )
     except IntegrityError:
         raise HTTPException(400, "Username and/or email is already in use")
+
+
+async def current_user(access_token: str, session: AsyncSession):
+    """ Getting data about the current user by access token, if possible.
+    """
+    user_id = await run_in_threadpool(get_user_id_token, access_token)
+    if not user_id:
+        raise HTTPException(403, "Uncorrect token")
+
+    user = await get_current_user(user_id, session)
+    if not user:
+        raise HTTPException(400, "Unccorrect user")
+    return user
+
+
+async def update_token(token: str) -> str:
+    """ Updating the access token if it has expired. Getting a new one.
+    """
+    access = await run_in_threadpool(update_access_token, token)
+    if not access:
+        raise HTTPException(400, "Uncorrect refresh token")
+    return access

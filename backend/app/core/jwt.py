@@ -4,6 +4,8 @@ import datetime
 from typing import Tuple
 from typing import Optional
 
+from jwt.exceptions import PyJWTError
+
 from core.settings import settings
 
 
@@ -47,9 +49,9 @@ def update_access_token(refresh_token: str) -> Optional[str]:
         refresh_token_payload = jwt.decode(
             refresh_token,
             settings.SECRET_REFRESH_TOKEN,
-            algorithm="HS256"
+            algorithms=["HS256"]
         )
-    except jwt.ExpiredSignatureError:
+    except PyJWTError:
         # Handle expired tokens
         return None
 
@@ -67,3 +69,21 @@ def update_access_token(refresh_token: str) -> Optional[str]:
         algorithm="HS256"
     )
     return access_token
+
+
+def get_user_id_token(access_token: str) -> Optional[int]:
+    """ Get user_id on jwt payload. If it has valid.
+    """
+    # Decode the refresh token to get the user ID
+    try:
+        access_token_payload = jwt.decode(
+            access_token,
+            settings.SECRET_ACCESS_TOKEN,
+            algorithms=["HS256"]
+        )
+    except PyJWTError:
+        # Handle expired tokens
+        return None
+
+    user_id = access_token_payload["user_id"]
+    return user_id

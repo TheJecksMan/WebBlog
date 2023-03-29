@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
 
-# from core.settings import ASYNC_DATABASE_URL, DEBUG_MODE
 from core.settings import settings
 
 from modules.database.models import Base
