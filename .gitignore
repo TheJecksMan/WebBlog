@@ -2,8 +2,11 @@
 .venv/
 *.db
 
-#mypy
+# mypy cache
 .mypy_cache/
 
-#Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files
 __pycache__/
+
+# pytest cache
+.pytest_cache/
