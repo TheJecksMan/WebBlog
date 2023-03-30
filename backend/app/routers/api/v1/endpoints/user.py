@@ -19,8 +19,9 @@ from modules.schemas.user import RefreshToken
 from modules.schemas.user import RegistrationUser
 
 from modules.schemas.response.user import ResponseToken as RToken
-from modules.schemas.response.user import ResponseRefreshToken as RRToken
 from modules.schemas.response.user import ResponseCurrentUser as RCUser
+from modules.schemas.response.user import ResponseRefreshToken as RRToken
+
 
 router = APIRouter()
 
@@ -54,7 +55,7 @@ async def refresh_token_user(token: RefreshToken):
 @router.post("/registration", response_class=R_ORJSON)
 async def sign_up(
     body: RegistrationUser,
-    session: Annotated[AsyncSession, Depends(get_async_session)]
+    session: Session
 ):
     await create_user(body.username, body.email, body.password, session)
     return R_ORJSON({
@@ -65,8 +66,7 @@ async def sign_up(
 @router.get("/me", response_model=RCUser)
 async def current_data_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    session: Annotated[AsyncSession, Depends(get_async_session)]
+    session: Session
 ):
-    print(RCUser.Config.__dict__)
     user = await current_user(token, session)
     return user

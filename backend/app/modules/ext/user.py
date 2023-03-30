@@ -1,8 +1,8 @@
 from typing import Tuple
 from fastapi import HTTPException
 
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from starlette.concurrency import run_in_threadpool
 

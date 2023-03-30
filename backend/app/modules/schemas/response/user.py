@@ -19,6 +19,8 @@ class ResponseCurrentUser(BaseModel):
     avatar_url: str | None
     create_at: datetime
     is_active: bool
+    name: str
+    color: str
 
     class Config:
         orm_mode = True
