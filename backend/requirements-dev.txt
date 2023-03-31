@@ -1,8 +1,14 @@
 #Tools
 autopep8
+
+# Linter
 mypy
 flake8
 pylint
 
-#Database
+# Testings
+pytest
+httpx
+
+# Database
 aiosqlite==0.18.0
