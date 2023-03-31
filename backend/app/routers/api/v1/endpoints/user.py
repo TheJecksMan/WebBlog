@@ -25,14 +25,13 @@ from modules.schemas.response.user import ResponseRefreshToken as RRToken
 
 router = APIRouter()
 
+JWTToken = Annotated[str, Depends(oauth2_scheme)]
+FormLogin = Annotated[OAuth2PasswordRequestForm, Depends()]
 Session = Annotated[AsyncSession, Depends(get_async_session)]
 
 
 @router.post("/token", response_model=RToken, response_class=R_ORJSON)
-async def sign_in(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    session: Session
-):
+async def sign_in(form_data: FormLogin, session: Session):
     access_token, refresh_token = await authenticate_user(
         form_data.username,
         form_data.password,
@@ -53,10 +52,7 @@ async def refresh_token_user(token: RefreshToken):
 
 
 @router.post("/registration", response_class=R_ORJSON)
-async def sign_up(
-    body: RegistrationUser,
-    session: Session
-):
+async def sign_up(body: RegistrationUser, session: Session):
     await create_user(body.username, body.email, body.password, session)
     return R_ORJSON({
         "detail": "Success registration!"
@@ -64,9 +60,6 @@ async def sign_up(
 
 
 @router.get("/me", response_model=RCUser, response_class=R_ORJSON)
-async def current_data_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
-    session: Session
-):
+async def current_data_user(token: JWTToken, session: Session):
     user = await current_user(token, session)
     return user

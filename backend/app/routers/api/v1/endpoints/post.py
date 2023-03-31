@@ -21,50 +21,34 @@ from modules.schemas.response.post import ResponseMultiplyPost as RMPost
 
 router = APIRouter()
 
+JWTToken = Annotated[str, Depends(oauth2_scheme)]
 Session = Annotated[AsyncSession, Depends(get_async_session)]
 
 
 @router.post("/create")
-async def create_post(
-    post: CUPost,
-    token: Annotated[str, Depends(oauth2_scheme)],
-    session: Session
-):
+async def create_post(post: CUPost, token: JWTToken, session: Session):
     post_data = await create_user_post(token, session, post.text, post.title)
     return post_data
 
 
 @router.put("/update")
-async def update_post(
-    post: UUPost,
-    token: Annotated[str, Depends(oauth2_scheme)],
-    session: Session
-):
+async def update_post(post: UUPost, token: JWTToken, session: Session):
     post_data = await update_user_post(post.post_id, token, session, post.text, post.title)
     return post_data
 
 
 @router.delete("/delete")
-async def delete_post(
-    id: int,
-    token: Annotated[str, Depends(oauth2_scheme)],
-    session: Session
-):
+async def delete_post(id: int, token: JWTToken, session: Session):
     post_data = await delete_user_post(id, token, session)
     return post_data
 
 
 @router.get("", response_model=RPost)
-async def get_post(
-    id: int,
-    session: Session
-):
+async def get_post(id: int, session: Session):
     post = await get_user_post(id, session)
     return post
 
 
 @router.get("/multiply", response_model=RMPost)
-async def get_multiply_posts(
-    session: Session
-):
+async def get_multiply_posts(session: Session):
     pass
