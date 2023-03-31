@@ -9,7 +9,7 @@ from starlette.concurrency import run_in_threadpool
 from core.settings import settings
 from core.jwt import generate_token
 from core.jwt import update_access_token
-from core.jwt import get_user_id_token
+from core.jwt import get_user_by_token
 from core.security import verify_password
 from core.security import get_password_hash
 
@@ -36,12 +36,12 @@ async def authenticate_user(username: str, password: str, session: AsyncSession)
     if not hashed_password:
         raise HTTPException(400, "Incorrect user and/or password")
 
-    access, refresh = await run_in_threadpool(generate_token, user.id)
+    access, refresh = await run_in_threadpool(generate_token, user.id, user.role_id)
     return access, refresh
 
 
 async def create_user(username: str, email: str, password: str, session: AsyncSession):
-    """User registration in the database.
+    """ User registration in the database.
     The password obtained from the parameters is securely hashed by the bcrypt algorithm.
     """
     hashed_password = await run_in_threadpool(get_password_hash, password)
@@ -60,7 +60,7 @@ async def create_user(username: str, email: str, password: str, session: AsyncSe
 async def current_user(access_token: str, session: AsyncSession):
     """ Getting data about the current user by access token, if possible.
     """
-    user_id = await run_in_threadpool(get_user_id_token, access_token)
+    user_id, _ = await run_in_threadpool(get_user_by_token, access_token)
     if not user_id:
         raise HTTPException(403, "Uncorrect token")
 

@@ -63,7 +63,7 @@ async def sign_up(
     })
 
 
-@router.get("/me", response_model=RCUser)
+@router.get("/me", response_model=RCUser, response_class=R_ORJSON)
 async def current_data_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     session: Session

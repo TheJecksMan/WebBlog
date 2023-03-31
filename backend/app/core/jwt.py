@@ -9,7 +9,7 @@ from jwt.exceptions import PyJWTError
 from core.settings import settings
 
 
-def generate_token(user_id: int) -> Tuple[str, str]:
+def generate_token(user_id: int, role_id: int) -> Tuple[str, str]:
     """Generate new JSON Web Token (RFC 7519) for user.
     """
     access_token_expires = datetime.timedelta(minutes=settings.ACCESS_TOKEN_EXPIRED)
@@ -18,6 +18,7 @@ def generate_token(user_id: int) -> Tuple[str, str]:
     # Create access token
     access_token_payload = {
         "user_id": user_id,
+        "role_id": role_id,
         "exp": datetime.datetime.utcnow() + access_token_expires,
         "iat": datetime.datetime.utcnow()
     }
@@ -30,6 +31,7 @@ def generate_token(user_id: int) -> Tuple[str, str]:
     # Create refresh token
     refresh_token_payload = {
         "user_id": user_id,
+        "role_id": role_id,
         "exp": datetime.datetime.utcnow() + refresh_token_expires,
         "iat": datetime.datetime.utcnow()
     }
@@ -57,9 +59,11 @@ def update_access_token(refresh_token: str) -> Optional[str]:
 
     # Create a new access token
     user_id = refresh_token_payload["user_id"]
+    role_id = refresh_token_payload["role_id"]
     access_token_expires = datetime.timedelta(minutes=settings.ACCESS_TOKEN_EXPIRED)
     access_token_payload = {
         "user_id": user_id,
+        "role_id": role_id,
         "exp": datetime.datetime.utcnow() + access_token_expires,
         "iat": datetime.datetime.utcnow()
     }
@@ -71,7 +75,7 @@ def update_access_token(refresh_token: str) -> Optional[str]:
     return access_token
 
 
-def get_user_id_token(access_token: str) -> Optional[int]:
+def get_user_by_token(access_token: str) -> Optional[Tuple[int, int]]:
     """ Get user_id on jwt payload. If it has valid.
     """
     # Decode the refresh token to get the user ID
@@ -86,4 +90,5 @@ def get_user_id_token(access_token: str) -> Optional[int]:
         return None
 
     user_id = access_token_payload["user_id"]
-    return user_id
+    role_id = access_token_payload["role_id"]
+    return user_id, role_id

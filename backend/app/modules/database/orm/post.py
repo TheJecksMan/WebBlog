@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from modules.database.models import Posts
 
 
-async def create_post(session: AsyncSession, **kwargs):
+async def create_post(user_id: int, session: AsyncSession, **kwargs):
     result = await session.execute(insert(Posts).values(**kwargs))
     return result
 

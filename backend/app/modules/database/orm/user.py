@@ -6,7 +6,7 @@ from modules.database.models import UsersRole
 
 async def get_user_by_username(username: str, session: AsyncSession):
     result = await session.execute(
-        select(Users.id, Users.username, Users.password, Users.is_active)
+        select(Users.id, Users.username, Users.password, Users.is_active, Users.role_id)
         .where(Users.username == username)
     )
     return result.first()

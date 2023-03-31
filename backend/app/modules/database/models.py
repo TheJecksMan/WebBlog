@@ -17,7 +17,7 @@ class Posts(Base):
     __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    author: Mapped[int]
+    author: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(225), nullable=False)
     text: Mapped[str] = mapped_column(nullable=False)
     create_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
