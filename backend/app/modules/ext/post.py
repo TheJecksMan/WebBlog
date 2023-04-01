@@ -13,6 +13,7 @@ from modules.database.orm.post import update_post
 from modules.database.orm.post import create_post
 from modules.database.orm.post import get_post_by_id
 from modules.database.orm.post import delete_post_by_id
+from modules.database.orm.post import get_multiply_post
 
 from core.settings import settings
 
@@ -24,7 +25,7 @@ async def create_user_post(access_token: str, session: AsyncSession, text: str, 
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 
-    result = await create_post(user_id, session, author=user_id, text=text, title=title)
+    result = await create_post(session, author=user_id, text=text, title=title)
     return result
 
 
@@ -34,11 +35,7 @@ async def get_user_post(post_id: int, session: AsyncSession):
     post: Posts = await get_post_by_id(post_id, session)
     if not post:
         raise HTTPException(404, "Post not found!")
-
-    post = post[0]
-    if not post.is_moderated:
-        raise HTTPException(400, "Post in moderation")
-    return post
+    return post[0]
 
 
 async def delete_user_post(post_id: int, access_token: str, session: AsyncSession):
@@ -62,3 +59,14 @@ async def update_user_post(post_id: int, access_token: str, session: AsyncSessio
     now_utc = datetime.utcnow()
     post = update_post(post_id, session, text=text, title=title, update_at=now_utc)
     return post
+
+
+async def get_multiply_user_posts(page: int, limit: int, session: AsyncSession):
+    """Getting a list of posts. available for viewing.
+    """
+    posts_id = page * limit - limit
+    posts = await get_multiply_post(posts_id, limit, session)
+
+    if len(posts) == 0:
+        raise HTTPException(404, "Posts not found")
+    return posts

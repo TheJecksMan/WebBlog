@@ -10,10 +10,6 @@ class Post(BaseModel):
     post_id: int
 
 
-class PostMultiply(BaseModel):
-    page: int
-
-
 class UpdateUserPost(Post):
     post_id: int
     title: str

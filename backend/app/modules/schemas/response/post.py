@@ -4,6 +4,7 @@ from typing import List
 from datetime import datetime
 
 from pydantic import BaseModel
+from pydantic import Field
 
 
 class ResponsePost(BaseModel):
@@ -20,10 +21,14 @@ class ResponsePost(BaseModel):
 
 
 class ResponseListPost(BaseModel):
-    post_id: int
-    author: int
-    title: int
+    id: int
+    username: str = Field(alias='author')
+    title: str
     create_at: datetime
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
 
 
 class ResponseMultiplyPost(BaseModel):

@@ -22,7 +22,6 @@ class Posts(Base):
     text: Mapped[str] = mapped_column(nullable=False)
     create_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
     update_at: Mapped[datetime] = mapped_column(nullable=True)
-    is_moderated: Mapped[bool] = mapped_column(default=False)
 
 
 class Users(Base):
