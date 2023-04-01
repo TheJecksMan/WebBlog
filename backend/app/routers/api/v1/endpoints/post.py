@@ -1,5 +1,6 @@
 from typing import Annotated
 
+from fastapi import Query
 from fastapi import Depends
 from fastapi import APIRouter
 
@@ -12,6 +13,7 @@ from modules.ext.post import get_user_post
 from modules.ext.post import create_user_post
 from modules.ext.post import delete_user_post
 from modules.ext.post import update_user_post
+from modules.ext.post import get_multiply_user_posts
 
 from modules.schemas.post import CreateUserPost as CUPost
 from modules.schemas.post import UpdateUserPost as UUPost
@@ -50,5 +52,11 @@ async def get_post(id: int, session: Session):
 
 
 @router.get("/multiply", response_model=RMPost)
-async def get_multiply_posts(session: Session):
-    pass
+async def get_multiply_posts(
+    page: Annotated[int, Query(ge=1)],
+    limit: Annotated[int, Query(ge=5, le=10)],
+    session: Session
+):
+    posts = await get_multiply_user_posts(page, limit, session)
+    print(posts[0]._mapping)
+    return RMPost(posts=posts)

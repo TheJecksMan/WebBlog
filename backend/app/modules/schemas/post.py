@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from pydantic import Field
+
 
 class CreateUserPost(BaseModel):
     title: str
@@ -8,10 +10,6 @@ class CreateUserPost(BaseModel):
 
 class Post(BaseModel):
     post_id: int
-
-
-class PostMultiply(BaseModel):
-    page: int
 
 
 class UpdateUserPost(Post):
