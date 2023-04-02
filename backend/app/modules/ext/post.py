@@ -18,10 +18,10 @@ from modules.database.orm.post import get_multiply_post
 from core.settings import settings
 
 
-async def create_user_post(access_token: str, session: AsyncSession, text: str, title: str):
+async def create_user_post(token: str, session: AsyncSession, text: str, title: str):
     """Creating a new post by id if the user does not have the appropriate rights.
     """
-    user_id, role_id = await run_in_threadpool(get_user_by_token, access_token)
+    user_id, role_id = await run_in_threadpool(get_user_by_token, token)
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 
@@ -38,10 +38,10 @@ async def get_user_post(post_id: int, session: AsyncSession):
     return post[0]
 
 
-async def delete_user_post(post_id: int, access_token: str, session: AsyncSession):
+async def delete_user_post(post_id: int, token: str, session: AsyncSession):
     """Deleting a post by id if the user does not have the appropriate rights.
     """
-    _, role_id = await run_in_threadpool(get_user_by_token, access_token)
+    _, role_id = await run_in_threadpool(get_user_by_token, token)
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 
@@ -49,10 +49,10 @@ async def delete_user_post(post_id: int, access_token: str, session: AsyncSessio
     return post
 
 
-async def update_user_post(post_id: int, access_token: str, session: AsyncSession, text: str, title: str):
+async def update_user_post(post_id: int, token: str, session: AsyncSession, text: str, title: str):
     """Updating post data by id if the user does not have the appropriate rights.
     """
-    _, role_id = await run_in_threadpool(get_user_by_token, access_token)
+    _, role_id = await run_in_threadpool(get_user_by_token, token)
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 

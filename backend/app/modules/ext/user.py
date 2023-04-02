@@ -57,10 +57,10 @@ async def create_user(username: str, email: str, password: str, session: AsyncSe
         raise HTTPException(400, "Username and/or email is already in use")
 
 
-async def current_user(access_token: str, session: AsyncSession):
+async def current_user(token: str, session: AsyncSession):
     """ Getting data about the current user by access token, if possible.
     """
-    user_id, _ = await run_in_threadpool(get_user_by_token, access_token)
+    user_id, _ = await run_in_threadpool(get_user_by_token, token)
     if not user_id:
         raise HTTPException(403, "Uncorrect token")
 

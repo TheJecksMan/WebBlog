@@ -3,10 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers.api.v1.api import api_router
 
+from core.settings import settings
 from modules.database.engine import initialization_database
 
 
-app = FastAPI()
+app = FastAPI(
+    title=settings.TITLE_APP,
+    version=settings.VERSION_APP
+)
 
 app.add_middleware(
     CORSMiddleware,
