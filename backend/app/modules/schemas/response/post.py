@@ -1,15 +1,15 @@
-import orjson
-
 from typing import List
 from datetime import datetime
 
 from pydantic import BaseModel
 from pydantic import Field
 
+from core.orjson import orjson_dumps
+
 
 class ResponsePost(BaseModel):
     id: str
-    author: int
+    username: str = Field(alias='author')
     title: str
     text: str
     create_at: datetime
@@ -17,7 +17,8 @@ class ResponsePost(BaseModel):
 
     class Config:
         orm_mode = True
-        json_loads = orjson.loads
+        json_dumps = orjson_dumps
+        allow_population_by_field_name = True
 
 
 class ResponseListPost(BaseModel):
@@ -28,6 +29,7 @@ class ResponseListPost(BaseModel):
 
     class Config:
         orm_mode = True
+        json_dumps = orjson_dumps
         allow_population_by_field_name = True
 
 
@@ -36,4 +38,4 @@ class ResponseMultiplyPost(BaseModel):
 
     class Config:
         orm_mode = True
-        json_loads = orjson.loads
+        json_dumps = orjson_dumps

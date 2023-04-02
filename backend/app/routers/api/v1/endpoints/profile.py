@@ -23,6 +23,6 @@ Session = Annotated[AsyncSession, Depends(get_async_session)]
 @router.put("/security/change/password", response_class=R_ORJSON)
 async def change_password(schema: CPassword, token: JWTToken, session: Session):
     await change_user_password(schema.password, token, session)
-    return R_ORJSON({
+    return {
         "detail": "Success"
-    })
+    }

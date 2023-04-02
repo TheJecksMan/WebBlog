@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.jwt import get_user_by_token
 
-from modules.database.models import Posts
 from modules.database.orm.post import update_post
 from modules.database.orm.post import create_post
 from modules.database.orm.post import get_post_by_id
@@ -32,10 +31,10 @@ async def create_user_post(token: str, session: AsyncSession, text: str, title: 
 async def get_user_post(post_id: int, session: AsyncSession):
     """Getting post data if it exists or is not under moderation.
     """
-    post: Posts = await get_post_by_id(post_id, session)
+    post = await get_post_by_id(post_id, session)
     if not post:
         raise HTTPException(404, "Post not found!")
-    return post[0]
+    return post
 
 
 async def delete_user_post(post_id: int, token: str, session: AsyncSession):

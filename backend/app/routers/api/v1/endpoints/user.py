@@ -37,26 +37,26 @@ async def sign_in(form_data: FormLogin, session: Session):
         form_data.password,
         session
     )
-    return R_ORJSON({
+    return {
         "access_token": access_token,
         "refresh_token": refresh_token
-    })
+    }
 
 
 @router.post("/token/refresh", response_model=RRToken, response_class=R_ORJSON)
 async def refresh_token_user(token: RefreshToken):
     access_token = await update_token(token.refresh_token)
-    return R_ORJSON({
+    return {
         "access_token": access_token
-    })
+    }
 
 
 @router.post("/registration", response_class=R_ORJSON)
 async def sign_up(body: RegistrationUser, session: Session):
     await create_user(body.username, body.email, body.password, session)
-    return R_ORJSON({
+    return {
         "detail": "Success registration!"
-    })
+    }
 
 
 @router.get("/me", response_model=RCUser, response_class=R_ORJSON)

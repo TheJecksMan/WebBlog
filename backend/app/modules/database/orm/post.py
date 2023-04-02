@@ -16,7 +16,10 @@ async def update_post(post_id: int, session: AsyncSession, **kwargs):
 
 
 async def get_post_by_id(post_id: int, session: AsyncSession):
-    result = await session.execute(select(Posts).where(Posts.id == post_id))
+    result = await session.execute(
+        select(Posts.id, Posts.create_at, Posts.title, Posts.text, Users.username)
+        .join(Users)
+        .where(Posts.id == post_id))
     return result.first()
 
 

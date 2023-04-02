@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic import BaseSettings
 
 
@@ -8,7 +9,7 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str
-    DEBUG_MODE: bool
+    DEBUG_MODE: bool = Field(default=False)
 
     # JWT
     ACCESS_TOKEN_EXPIRED: int
