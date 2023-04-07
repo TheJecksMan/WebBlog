@@ -13,7 +13,7 @@ from modules.database.orm.user import get_user_by_username
 async def test_correct_create_user(client: AsyncClient, session: AsyncSession):
     email = random_email()
     username = random_lowercase_string(20)
-    password = "$2a$12$wwZhYsm/IJpjJjY5xlXY5eogwvstUvB0Nq8zkRhqsJghr8OeWtiqy"
+    password = random_lowercase_string(20)
 
     data = {"email": email, "username": username, "password": password}
 
@@ -21,7 +21,7 @@ async def test_correct_create_user(client: AsyncClient, session: AsyncSession):
     assert res.status_code == 200
 
     user = await get_user_by_username(username, session)
-    assert user.is_active == True
+    assert user.is_active
     assert user.username == username
 
 
@@ -29,7 +29,7 @@ async def test_correct_create_user(client: AsyncClient, session: AsyncSession):
 async def test_uncorrect_create_user(client: AsyncClient):
     email = random_email(350)
     username = random_lowercase_string(20)
-    password = "$2a$12$wwZhYsm/IJpjJjY5xlXY5eogwvstUvB0Nq8zkRhqsJghr8OeWtiqy"
+    password = random_lowercase_string(20)
 
     data = {"email": email, "username": username, "password": password}
 
@@ -41,7 +41,7 @@ async def test_uncorrect_create_user(client: AsyncClient):
 async def test_existing_create_user(client: AsyncClient):
     email = random_email()
     username = random_lowercase_string(20)
-    password = "$2a$12$wwZhYsm/IJpjJjY5xlXY5eogwvstUvB0Nq8zkRhqsJghr8OeWtiqy"
+    password = random_lowercase_string(20)
 
     data = {"email": email, "username": username, "password": password}
     res = await client.post(url="/api/v1/user/registration", json=data)
