@@ -55,7 +55,7 @@ async def get_post(id: PostID, session: Session):
 
 @router.get("/multiply", response_model=RMPost, response_class=R_ORJSON)
 async def get_multiply_posts(
-    page: Annotated[int, Query(ge=1)],
+    page: Annotated[int, Query(ge=1, le=350)],
     limit: Annotated[int, Query(ge=5, le=10)],
     session: Session
 ):

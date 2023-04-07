@@ -20,7 +20,7 @@ from modules.schemas.user import RegistrationUser
 
 from modules.schemas.response.user import ResponseToken as RToken
 from modules.schemas.response.user import ResponseCurrentUser as RCUser
-from modules.schemas.response.user import ResponseRefreshToken as RRToken
+from modules.schemas.response.user import ResponseAccessToken as RAToken
 
 
 router = APIRouter()
@@ -43,7 +43,7 @@ async def sign_in(form_data: FormLogin, session: Session):
     }
 
 
-@router.post("/token/refresh", response_model=RRToken, response_class=R_ORJSON)
+@router.post("/token/refresh", response_model=RAToken, response_class=R_ORJSON)
 async def refresh_token_user(token: RefreshToken):
     access_token = await update_token(token.refresh_token)
     return {

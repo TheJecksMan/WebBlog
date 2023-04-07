@@ -12,8 +12,8 @@ class ResponseToken(BaseModel):
         json_dumps = orjson_dumps
 
 
-class ResponseRefreshToken(BaseModel):
-    refresh_token: str
+class ResponseAccessToken(BaseModel):
+    access_token: str
 
     class Config:
         json_dumps = orjson_dumps

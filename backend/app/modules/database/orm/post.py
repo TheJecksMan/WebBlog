@@ -27,7 +27,7 @@ async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
     result = await session.execute(
         select(Posts.id, Posts.create_at, Posts.title, Users.username)
         .join(Users)
-        .where(Posts.id >= posts_id)
+        .where(Posts.id > posts_id)
         .order_by(Posts.create_at.asc())
         .limit(limit)
     )
