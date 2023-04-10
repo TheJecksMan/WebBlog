@@ -1,5 +1,6 @@
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from modules.database.models import Users
 from modules.database.models import UsersRole
 
@@ -14,6 +15,12 @@ async def get_user_by_username(username: str, session: AsyncSession):
 
 async def insert_user(session: AsyncSession, **kwargs):
     await session.execute(insert(Users).values(**kwargs))
+
+
+async def update_user(user_id: int, session: AsyncSession, **kwargs):
+    await session.execute(
+        update(Users).values(**kwargs).where(Users.id == user_id)
+    )
 
 
 async def get_current_user(user_id: int, session: AsyncSession):

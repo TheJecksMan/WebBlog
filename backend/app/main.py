@@ -1,16 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from core.settings import settings
 from routers.api.v1.api import api_router
-
 from modules.database.engine import initialization_database
 
 
-app = FastAPI()
+app = FastAPI(
+    title=settings.TITLE_APP,
+    version=settings.VERSION_APP
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"]
+    allow_origins=["*"],
+    allow_credentials=True
 )
 
 

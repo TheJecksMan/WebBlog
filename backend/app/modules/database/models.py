@@ -18,7 +18,7 @@ class Posts(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     author: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    title: Mapped[str] = mapped_column(String(225), nullable=False)
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
     text: Mapped[str] = mapped_column(nullable=False)
     create_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
     update_at: Mapped[datetime] = mapped_column(nullable=True)
@@ -28,7 +28,7 @@ class Users(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(60), unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     avatar_url: Mapped[str] = mapped_column(nullable=True)

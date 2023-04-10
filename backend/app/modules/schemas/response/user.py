@@ -1,16 +1,22 @@
-import orjson
-
 from datetime import datetime
 from pydantic import BaseModel
+
+from core.orjson import orjson_dumps
 
 
 class ResponseToken(BaseModel):
     access_token: str
     refresh_token: str
 
+    class Config:
+        json_dumps = orjson_dumps
 
-class ResponseRefreshToken(BaseModel):
-    refresh_token: str
+
+class ResponseAccessToken(BaseModel):
+    access_token: str
+
+    class Config:
+        json_dumps = orjson_dumps
 
 
 class ResponseCurrentUser(BaseModel):
@@ -24,4 +30,4 @@ class ResponseCurrentUser(BaseModel):
 
     class Config:
         orm_mode = True
-        json_loads = orjson.loads
+        json_dumps = orjson_dumps

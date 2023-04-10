@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Query
 from fastapi import Depends
 from fastapi import APIRouter
+from fastapi.responses import ORJSONResponse as R_ORJSON
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -25,37 +26,38 @@ router = APIRouter()
 
 JWTToken = Annotated[str, Depends(oauth2_scheme)]
 Session = Annotated[AsyncSession, Depends(get_async_session)]
+PostID = Annotated[int, Query(ge=1, le=100_000)]
 
 
-@router.post("/create")
+@router.post("/create", response_class=R_ORJSON)
 async def create_post(post: CUPost, token: JWTToken, session: Session):
     post_data = await create_user_post(token, session, post.text, post.title)
     return post_data
 
 
-@router.put("/update")
+@router.put("/update", response_class=R_ORJSON)
 async def update_post(post: UUPost, token: JWTToken, session: Session):
     post_data = await update_user_post(post.post_id, token, session, post.text, post.title)
     return post_data
 
 
-@router.delete("/delete")
-async def delete_post(id: int, token: JWTToken, session: Session):
+@router.delete("/delete", response_class=R_ORJSON)
+async def delete_post(id: PostID, token: JWTToken, session: Session):
     post_data = await delete_user_post(id, token, session)
     return post_data
 
 
-@router.get("", response_model=RPost)
-async def get_post(id: int, session: Session):
+@router.get("", response_model=RPost, response_class=R_ORJSON)
+async def get_post(id: PostID, session: Session):
     post = await get_user_post(id, session)
     return post
 
 
-@router.get("/multiply", response_model=RMPost)
+@router.get("/multiply", response_model=RMPost, response_class=R_ORJSON)
 async def get_multiply_posts(
-    page: Annotated[int, Query(ge=1)],
+    page: Annotated[int, Query(ge=1, le=350)],
     limit: Annotated[int, Query(ge=5, le=10)],
     session: Session
 ):
-    posts = await get_multiply_user_posts(page, limit, session)
-    return RMPost(posts=posts)
+    posts, t_pages = await get_multiply_user_posts(page, limit, session)
+    return RMPost(posts=posts, total_pages=t_pages)

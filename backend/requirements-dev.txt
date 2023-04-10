@@ -1,6 +1,8 @@
 #Tools
 autopep8
 
+alembic==1.10.2
+
 # Linter
 mypy
 flake8

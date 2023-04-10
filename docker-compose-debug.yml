@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  backend:
+    image: backend_blog
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    expose:
+       - 8000
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@database/blog
+      - ACCESS_TOKEN_EXPIRED=15 #minutes
+      - REFRESH_TOKEN_EXPIRED=3 #days
+      - SECRET_ACCESS_TOKEN=test_access
+      - SECRET_REFRESH_TOKEN=test_refresh
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=Host(`192.168.1.3`)" # domain or ip machine
+    depends_on:
+      - database
+
+  database:
+    image: postgres:15.2
+    container_name: "database_blog"
+    restart: always
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=blog
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+  
+  traefik:
+    image: traefik:v2.9.10
+    container_name: "traefik_proxy_blog"
+    restart: always
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+volumes:
+  pg-data:
