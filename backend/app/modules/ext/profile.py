@@ -1,6 +1,6 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.concurrency import run_in_threadpool
 
-from starlette.concurrency import run_in_threadpool
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.jwt import get_user_by_token
 from core.security import get_password_hash

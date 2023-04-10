@@ -1,10 +1,9 @@
 from typing import Tuple
 from fastapi import HTTPException
+from fastapi.concurrency import run_in_threadpool
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from starlette.concurrency import run_in_threadpool
 
 from core.settings import settings
 from core.jwt import generate_token
