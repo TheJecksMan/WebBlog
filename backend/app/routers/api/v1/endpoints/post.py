@@ -59,5 +59,5 @@ async def get_multiply_posts(
     limit: Annotated[int, Query(ge=5, le=10)],
     session: Session
 ):
-    posts = await get_multiply_user_posts(page, limit, session)
-    return RMPost(posts=posts)
+    posts, t_pages = await get_multiply_user_posts(page, limit, session)
+    return RMPost(posts=posts, total_pages=t_pages)

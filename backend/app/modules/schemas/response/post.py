@@ -1,8 +1,8 @@
 from typing import List
 from datetime import datetime
 
-from pydantic import BaseModel
 from pydantic import Field
+from pydantic import BaseModel
 
 from core.orjson import orjson_dumps
 
@@ -35,6 +35,7 @@ class ResponseListPost(BaseModel):
 
 class ResponseMultiplyPost(BaseModel):
     posts: List[ResponseListPost]
+    total_pages: int
 
     class Config:
         orm_mode = True

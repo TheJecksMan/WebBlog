@@ -1,8 +1,8 @@
+from math import ceil
 from datetime import datetime
 
-from starlette.concurrency import run_in_threadpool
-
 from fastapi import HTTPException
+from fastapi.concurrency import run_in_threadpool
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,6 +10,7 @@ from core.jwt import get_user_by_token
 
 from modules.database.orm.post import update_post
 from modules.database.orm.post import create_post
+from modules.database.orm.post import get_count_post
 from modules.database.orm.post import get_post_by_id
 from modules.database.orm.post import delete_post_by_id
 from modules.database.orm.post import get_multiply_post
@@ -68,4 +69,8 @@ async def get_multiply_user_posts(page: int, limit: int, session: AsyncSession):
 
     if len(posts) == 0:
         raise HTTPException(404, "Posts not found")
-    return posts
+
+    # Counting the total number of pages
+    total_posts = await get_count_post(session)
+    total_pages: int = ceil(total_posts[0] / limit)
+    return posts, total_pages
