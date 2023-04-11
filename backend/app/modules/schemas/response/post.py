@@ -7,6 +7,15 @@ from pydantic import BaseModel
 from core.orjson import orjson_dumps
 
 
+class ResponseBasePost(BaseModel):
+    id: int = Field(alias='post_id')
+
+    class Config:
+        orm_mode = True
+        json_dumps = orjson_dumps
+        allow_population_by_field_name = True
+
+
 class ResponsePost(BaseModel):
     id: str
     username: str = Field(alias='author')
