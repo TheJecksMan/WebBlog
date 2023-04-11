@@ -9,3 +9,10 @@ class ChangePassword(BaseModel):
 
     class Config:
         json_loads = orjson.loads
+
+
+class UpdateStatus(BaseModel):
+    status: str = Field(max_length=60)
+
+    class Config:
+        json_loads = orjson.loads

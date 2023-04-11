@@ -26,7 +26,8 @@ async def update_user(user_id: int, session: AsyncSession, **kwargs):
 async def get_current_user(user_id: int, session: AsyncSession):
     result = await session.execute(
         select(
-            Users.id, Users.username, Users.avatar_url, Users.create_at, Users.is_active,
+            Users.id, Users.username, Users.avatar_url,  Users.status,
+            Users.create_at, Users.is_active,
             UsersRole.name, UsersRole.color
         )
         .join(Users.role)

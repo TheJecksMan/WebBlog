@@ -64,6 +64,7 @@ async def current_user(token: str, session: AsyncSession):
         raise HTTPException(403, "Uncorrect token")
 
     user = await get_current_user(user_id, session)
+    print(user)
     if not user:
         raise HTTPException(400, "Unccorrect user")
     return user

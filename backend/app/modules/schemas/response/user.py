@@ -22,6 +22,7 @@ class ResponseAccessToken(BaseModel):
 class ResponseCurrentUser(BaseModel):
     id: int
     username: str
+    status: str
     avatar_url: str | None
     create_at: datetime
     is_active: bool

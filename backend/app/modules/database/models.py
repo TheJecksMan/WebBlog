@@ -32,6 +32,7 @@ class Users(Base):
     username: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
+    status: Mapped[str] = mapped_column(String(60), nullable=True, default='')
     avatar_url: Mapped[str] = mapped_column(nullable=True)
     create_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
     is_active: Mapped[bool] = mapped_column(default=True)
