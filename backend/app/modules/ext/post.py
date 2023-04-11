@@ -14,6 +14,7 @@ from modules.database.orm.post import get_count_post
 from modules.database.orm.post import get_post_by_id
 from modules.database.orm.post import delete_post_by_id
 from modules.database.orm.post import get_multiply_post
+from modules.database.orm.post import get_multiply_posts_user
 
 from core.settings import settings
 
@@ -84,6 +85,18 @@ async def get_multiply_user_posts(page: int, limit: int, session: AsyncSession):
         raise HTTPException(404, "Posts not found")
 
     # Counting the total number of pages
+    total_posts = await get_count_post(session)
+    total_pages: int = ceil(total_posts[0] / limit)
+    return posts, total_pages
+
+
+async def get_all_user_posts(user_id: int, page: int, limit: int, session: AsyncSession):
+    posts_id = page * limit - limit
+    posts = await get_multiply_posts_user(user_id, posts_id, limit, session)
+
+    if len(posts) == 0:
+        raise HTTPException(404, "Posts not found")
+
     total_posts = await get_count_post(session)
     total_pages: int = ceil(total_posts[0] / limit)
     return posts, total_pages

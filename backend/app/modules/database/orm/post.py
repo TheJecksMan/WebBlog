@@ -42,6 +42,17 @@ async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
     return result.all()
 
 
+async def get_multiply_posts_user(user_id: int, posts_id: int, limit: int, session: AsyncSession):
+    result = await session.execute(
+        select(Posts.id, Posts.create_at, Posts.title)
+        .join(Users)
+        .where(Posts.id > posts_id, Posts.author == user_id)
+        .order_by(Posts.create_at.desc())
+        .limit(limit)
+    )
+    return result.all()
+
+
 async def delete_post_by_id(post_id: int, session: AsyncSession):
     result = await session.execute(
         delete(Posts)
@@ -53,4 +64,9 @@ async def delete_post_by_id(post_id: int, session: AsyncSession):
 
 async def get_count_post(session: AsyncSession):
     result = await session.execute(select(func.count(Posts.id)))
+    return result.first()
+
+
+async def get_count_posts_user(user_id: int, session: AsyncSession):
+    result = await session.execute(select(func.count(Posts.id)).where(Posts.author == user_id))
     return result.first()

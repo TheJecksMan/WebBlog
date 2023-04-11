@@ -14,6 +14,7 @@ from modules.ext.post import get_user_post
 from modules.ext.post import create_user_post
 from modules.ext.post import delete_user_post
 from modules.ext.post import update_user_post
+from modules.ext.post import get_all_user_posts
 from modules.ext.post import get_multiply_user_posts
 
 from modules.schemas.post import CreateUserPost as CUPost
@@ -21,6 +22,7 @@ from modules.schemas.post import UpdateUserPost as UUPost
 from modules.schemas.response.post import ResponsePost as RPost
 from modules.schemas.response.post import ResponseBasePost as RBPost
 from modules.schemas.response.post import ResponseMultiplyPost as RMPost
+from modules.schemas.response.post import ResponseMultiplyAllUserPost as RMAUPost
 
 
 router = APIRouter()
@@ -62,3 +64,14 @@ async def get_multiply_posts(
 ):
     posts, t_pages = await get_multiply_user_posts(page, limit, session)
     return RMPost(posts=posts, total_pages=t_pages)
+
+
+@router.get("/user/all", response_model=RMAUPost, response_class=R_ORJSON)
+async def get_user_posts(
+    user_id: Annotated[int, Query(ge=1, le=2**63-1)],
+    page: Annotated[int, Query(ge=1, le=350)],
+    limit: Annotated[int, Query(ge=5, le=20)],
+    session: Session
+):
+    posts, t_pages = await get_all_user_posts(user_id, page, limit, session)
+    return RMAUPost(posts=posts, total_pages=t_pages)

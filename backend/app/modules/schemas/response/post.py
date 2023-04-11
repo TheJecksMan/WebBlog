@@ -51,3 +51,22 @@ class ResponseMultiplyPost(BaseModel):
     class Config:
         orm_mode = True
         json_dumps = orjson_dumps
+
+
+class ResponseListAllUserPost(BaseModel):
+    id: int
+    title: str
+    create_at: datetime
+
+    class Config:
+        orm_mode = True
+        json_dumps = orjson_dumps
+
+
+class ResponseMultiplyAllUserPost(BaseModel):
+    posts: List[ResponseListAllUserPost]
+    total_pages: int
+
+    class Config:
+        orm_mode = True
+        json_dumps = orjson_dumps
