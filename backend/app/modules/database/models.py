@@ -16,7 +16,7 @@ class Base(DeclarativeBase):
 class Posts(Base):
     __tablename__ = "posts"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     author: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     text: Mapped[str] = mapped_column(nullable=False)
@@ -28,7 +28,7 @@ class Posts(Base):
 class Users(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     username: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
@@ -44,6 +44,6 @@ class Users(Base):
 class UsersRole(Base):
     __tablename__ = "users_role"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(nullable=False)
     color: Mapped[str] = mapped_column(String(7), nullable=False)

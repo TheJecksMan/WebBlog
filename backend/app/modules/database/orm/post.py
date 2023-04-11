@@ -7,13 +7,19 @@ from modules.database.models import Users
 
 
 async def create_post(session: AsyncSession, **kwargs):
-    result = await session.execute(insert(Posts).values(**kwargs))
-    return result
+    result = await session.execute(
+        insert(Posts)
+        .values(**kwargs).returning(Posts.id)
+    )
+    return result.first()
 
 
 async def update_post(post_id: int, session: AsyncSession, **kwargs):
-    result = await session.execute(update(Posts).where(Posts.id == post_id).values(**kwargs))
-    return result
+    result = await session.execute(
+        update(Posts)
+        .where(Posts.id == post_id)
+        .values(**kwargs).returning(Posts.id))
+    return result.first()
 
 
 async def get_post_by_id(post_id: int, session: AsyncSession):
@@ -37,8 +43,12 @@ async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
 
 
 async def delete_post_by_id(post_id: int, session: AsyncSession):
-    result = await session.execute(delete(Posts).where(Posts.id == post_id))
-    return result
+    result = await session.execute(
+        delete(Posts)
+        .where(Posts.id == post_id)
+        .return_defaults(Posts.id)
+    )
+    return result.first()
 
 
 async def get_count_post(session: AsyncSession):

@@ -58,7 +58,7 @@ async def delete_user_post(post_id: int, token: str, session: AsyncSession):
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 
-    post = delete_post_by_id(post_id, session)
+    post = await delete_post_by_id(post_id, session)
     return post
 
 
@@ -70,7 +70,7 @@ async def update_user_post(post_id: int, token: str, session: AsyncSession, text
         raise HTTPException(403, "Access denied")
 
     now_utc = datetime.utcnow()
-    post = update_post(post_id, session, text=text, title=title, update_at=now_utc)
+    post = await update_post(post_id, session, text=text, title=title, update_at=now_utc)
     return post
 
 
