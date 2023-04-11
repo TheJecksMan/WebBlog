@@ -20,6 +20,7 @@ class Posts(Base):
     author: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     text: Mapped[str] = mapped_column(nullable=False)
+    reading_time: Mapped[int] = mapped_column(nullable=False)
     create_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
     update_at: Mapped[datetime] = mapped_column(nullable=True)
 

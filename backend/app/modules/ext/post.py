@@ -18,6 +18,12 @@ from modules.database.orm.post import get_multiply_post
 from core.settings import settings
 
 
+def _caculate_reading_time(text: str, char_per_second: int = 1200) -> int:
+    characters = len(text)
+    minutes = ceil(characters/char_per_second)
+    return minutes
+
+
 async def create_user_post(token: str, session: AsyncSession, text: str, title: str):
     """Creating a new post by id if the user does not have the appropriate rights.
     """
@@ -25,7 +31,14 @@ async def create_user_post(token: str, session: AsyncSession, text: str, title: 
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 
-    result = await create_post(session, author=user_id, text=text, title=title)
+    reading_time = _caculate_reading_time(text)
+    result = await create_post(
+        session,
+        author=user_id,
+        text=text,
+        title=title,
+        reading_time=reading_time
+    )
     return result
 
 

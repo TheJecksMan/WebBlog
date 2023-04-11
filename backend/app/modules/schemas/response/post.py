@@ -12,6 +12,7 @@ class ResponsePost(BaseModel):
     username: str = Field(alias='author')
     title: str
     text: str
+    reading_time: int
     create_at: datetime
     update_at: datetime | None
 
@@ -25,6 +26,7 @@ class ResponseListPost(BaseModel):
     id: int
     username: str = Field(alias='author')
     title: str
+    reading_time: int
     create_at: datetime
 
     class Config:

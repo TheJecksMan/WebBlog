@@ -18,7 +18,8 @@ async def update_post(post_id: int, session: AsyncSession, **kwargs):
 
 async def get_post_by_id(post_id: int, session: AsyncSession):
     result = await session.execute(
-        select(Posts.id, Posts.create_at, Posts.title, Posts.text, Users.username)
+        select(Posts.id, Posts.title, Posts.text, Posts.create_at,
+               Users.username, Posts.reading_time)
         .join(Users)
         .where(Posts.id == post_id))
     return result.first()
@@ -26,7 +27,7 @@ async def get_post_by_id(post_id: int, session: AsyncSession):
 
 async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
     result = await session.execute(
-        select(Posts.id, Posts.create_at, Posts.title, Users.username)
+        select(Posts.id, Posts.create_at, Posts.title, Users.username, Posts.reading_time)
         .join(Users)
         .where(Posts.id > posts_id)
         .order_by(Posts.create_at.desc())
