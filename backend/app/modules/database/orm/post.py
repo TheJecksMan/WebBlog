@@ -7,6 +7,15 @@ from modules.database.models import Users
 
 
 async def create_post(session: AsyncSession, **kwargs):
+    """ Creates a new post in the database with the provided data.
+
+    Args:
+        session (AsyncSession): An asynchronous session object.
+        **kwargs: Keyword arguments containing the data to be inserted into the Posts table.
+
+    Returns:
+        The ID of the newly created post.
+    """
     result = await session.execute(
         insert(Posts)
         .values(**kwargs).returning(Posts.id)
@@ -15,6 +24,16 @@ async def create_post(session: AsyncSession, **kwargs):
 
 
 async def update_post(post_id: int, session: AsyncSession, **kwargs):
+    """ Updates an existing post in the database with the provided data.
+
+    Args:
+        post_id (int): The ID of the post to be updated.
+        session (AsyncSession): An asynchronous session object.
+        **kwargs: Keyword arguments containing the data to be updated in the Posts table.
+
+    Returns:
+        The ID of the updated post.
+    """
     result = await session.execute(
         update(Posts)
         .where(Posts.id == post_id)
@@ -22,7 +41,16 @@ async def update_post(post_id: int, session: AsyncSession, **kwargs):
     return result.first()
 
 
-async def get_post_by_id(post_id: int, session: AsyncSession):
+async def get_post(post_id: int, session: AsyncSession):
+    """ Retrieves a single post from the database with the provided ID.
+
+    Args:
+        post_id (int): The ID of the post to be retrieved.
+        session (AsyncSession): An asynchronous session object.
+
+    Returns:
+        The requested post data.
+    """
     result = await session.execute(
         select(Posts.id, Posts.title, Posts.text, Posts.create_at,
                Users.username, Posts.reading_time)
@@ -32,6 +60,17 @@ async def get_post_by_id(post_id: int, session: AsyncSession):
 
 
 async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
+    """ Retrieves multiple posts from the database
+    with IDs greater than the provided ID.
+
+    Args:
+        posts_id (int): The ID of the most recent post to exclude from the results.
+        limit (int): The maximum number of posts to retrieve.
+        session (AsyncSession): An asynchronous session object.
+
+    Returns:
+        A list of the requested post data.
+    """
     result = await session.execute(
         select(Posts.id, Posts.create_at, Posts.title, Users.username, Posts.reading_time)
         .join(Users)
@@ -43,6 +82,18 @@ async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
 
 
 async def get_multiply_posts_user(user_id: int, posts_id: int, limit: int, session: AsyncSession):
+    """ Retrieves multiple posts from the database
+    with IDs greater than the provided ID and authored by the provided user.
+
+    Args:
+        user_id (int): The ID of the user who authored the posts.
+        posts_id (int): The ID of the most recent post to exclude from the results.
+        limit (int): The maximum number of posts to retrieve.
+        session (AsyncSession): An asynchronous session object.
+
+    Returns:
+        A list of the requested post data.
+    """
     result = await session.execute(
         select(Posts.id, Posts.create_at, Posts.title)
         .join(Users)
@@ -53,7 +104,16 @@ async def get_multiply_posts_user(user_id: int, posts_id: int, limit: int, sessi
     return result.all()
 
 
-async def delete_post_by_id(post_id: int, session: AsyncSession):
+async def delete_post(post_id: int, session: AsyncSession):
+    """ Deleting a requested post by its ID
+
+    Args:
+        post_id (int): The ID of the post you want to remove.
+        session (AsyncSession): An asynchronous session object.
+
+    Returns:
+        The requested post data.
+    """
     result = await session.execute(
         delete(Posts)
         .where(Posts.id == post_id)
@@ -63,10 +123,32 @@ async def delete_post_by_id(post_id: int, session: AsyncSession):
 
 
 async def get_count_post(session: AsyncSession):
-    result = await session.execute(select(func.count(Posts.id)))
+    """ Retrieves the total number of posts used for pagination.
+
+    Args:
+        session (AsyncSession): An asynchronous session object.
+
+    Returns:
+        Total number of posts.
+    """
+    result = await session.execute(
+        select(func.count(Posts.id))
+    )
     return result.first()
 
 
 async def get_count_posts_user(user_id: int, session: AsyncSession):
-    result = await session.execute(select(func.count(Posts.id)).where(Posts.author == user_id))
+    """ Retrieves the number of user posts.
+
+    Args:
+        user_id (int): The ID of the user whose post count data is to be retrieved.
+        session (AsyncSession): An asynchronous session object.
+
+    Returns:
+        Total number of posts.
+    """
+    result = await session.execute(
+        select(func.count(Posts.id))
+        .where(Posts.author == user_id)
+    )
     return result.first()

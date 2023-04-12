@@ -8,11 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.jwt import get_user_by_token
 
+from modules.database.orm.post import get_post
+from modules.database.orm.post import delete_post
 from modules.database.orm.post import update_post
 from modules.database.orm.post import create_post
 from modules.database.orm.post import get_count_post
-from modules.database.orm.post import get_post_by_id
-from modules.database.orm.post import delete_post_by_id
 from modules.database.orm.post import get_multiply_post
 from modules.database.orm.post import get_multiply_posts_user
 
@@ -20,6 +20,9 @@ from core.settings import settings
 
 
 def _caculate_reading_time(text: str, char_per_second: int = 1200) -> int:
+    """ Calculating the estimated reading time of a post based
+    on the number of characters and the average reading speed.
+    """
     characters = len(text)
     minutes = ceil(characters/char_per_second)
     return minutes
@@ -46,7 +49,7 @@ async def create_user_post(token: str, session: AsyncSession, text: str, title: 
 async def get_user_post(post_id: int, session: AsyncSession):
     """Getting post data if it exists or is not under moderation.
     """
-    post = await get_post_by_id(post_id, session)
+    post = await get_post(post_id, session)
     if not post:
         raise HTTPException(404, "Post not found!")
     return post
@@ -59,7 +62,7 @@ async def delete_user_post(post_id: int, token: str, session: AsyncSession):
     if not role_id == settings.ADMIN_ROLE_ID:
         raise HTTPException(403, "Access denied")
 
-    post = await delete_post_by_id(post_id, session)
+    post = await delete_post(post_id, session)
     return post
 
 

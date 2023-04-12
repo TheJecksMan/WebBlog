@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from modules.database.engine import async_session
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/user/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/token")
 
 
 async def get_async_session():

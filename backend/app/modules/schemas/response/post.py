@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from core.orjson import orjson_dumps
 
 
-class ResponseBasePost(BaseModel):
+class BasePost(BaseModel):
     id: int = Field(alias='post_id')
 
     class Config:
@@ -16,7 +16,7 @@ class ResponseBasePost(BaseModel):
         allow_population_by_field_name = True
 
 
-class ResponsePost(BaseModel):
+class Post(BaseModel):
     id: str
     username: str = Field(alias='author')
     title: str
@@ -31,7 +31,7 @@ class ResponsePost(BaseModel):
         allow_population_by_field_name = True
 
 
-class ResponseListPost(BaseModel):
+class ListPost(BaseModel):
     id: int
     username: str = Field(alias='author')
     title: str
@@ -44,8 +44,8 @@ class ResponseListPost(BaseModel):
         allow_population_by_field_name = True
 
 
-class ResponseMultiplyPost(BaseModel):
-    posts: List[ResponseListPost]
+class MultiplyPost(BaseModel):
+    posts: List[ListPost]
     total_pages: int
 
     class Config:
@@ -53,7 +53,7 @@ class ResponseMultiplyPost(BaseModel):
         json_dumps = orjson_dumps
 
 
-class ResponseListAllUserPost(BaseModel):
+class ListAllUserPost(BaseModel):
     id: int
     title: str
     create_at: datetime
@@ -63,8 +63,8 @@ class ResponseListAllUserPost(BaseModel):
         json_dumps = orjson_dumps
 
 
-class ResponseMultiplyAllUserPost(BaseModel):
-    posts: List[ResponseListAllUserPost]
+class MultiplyAllUserPost(BaseModel):
+    posts: List[ListAllUserPost]
     total_pages: int
 
     class Config:
