@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     TITLE_APP: str = "Back-end for Blog"
     VERSION_APP: str = "0.2.1"
 
+    # Sentry
+    SENTRY_DSN: str
+
     # Database
     DATABASE_URL: str
     DEBUG_MODE: bool = Field(default=False)

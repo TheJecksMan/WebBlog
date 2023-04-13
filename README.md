@@ -8,3 +8,4 @@ Backend личного блога, который разрабатывается
     - FastAPI
     - Alembic
     - SQLAlchemy 2.x
+    - Sentry
