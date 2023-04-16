@@ -10,6 +10,7 @@ from modules.database.engine import initialization_database
 sentry_init(
     dsn=settings.SENTRY_DSN,
     traces_sample_rate=1.0,
+    debug=settings.DEBUG_MODE
 )
 
 app = FastAPI(
