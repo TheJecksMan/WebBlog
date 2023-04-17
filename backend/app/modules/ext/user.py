@@ -7,21 +7,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.settings import settings
 from core.jwt import generate_token
-from core.jwt import update_access_token
 from core.jwt import get_user_by_token
+from core.jwt import update_access_token
 from core.security import verify_password
 from core.security import get_password_hash
 
 from modules.database.models import Users
+from modules.database.orm.user import get_user
 from modules.database.orm.user import insert_user
 from modules.database.orm.user import get_current_user
-from modules.database.orm.user import get_user_by_username
 
 
 async def authenticate_user(username: str, password: str, session: AsyncSession) -> Tuple[str, str]:
     """Database user authentication. Getting a JWT Token
     """
-    user: Users = await get_user_by_username(username, session)
+    user: Users = await get_user(username, session)
     # User not registered
     if not user:
         raise HTTPException(400, "Incorrect user and/or password")
@@ -63,6 +63,15 @@ async def current_user(token: str, session: AsyncSession):
     if not user_id:
         raise HTTPException(403, "Uncorrect token")
 
+    user = await get_current_user(user_id, session)
+    if not user:
+        raise HTTPException(400, "Unccorrect user")
+    return user
+
+
+async def search_user(user_id: int, session: AsyncSession):
+    """ Getting data about the user by id, if possible.
+    """
     user = await get_current_user(user_id, session)
     if not user:
         raise HTTPException(400, "Unccorrect user")

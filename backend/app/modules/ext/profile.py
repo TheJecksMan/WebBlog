@@ -15,3 +15,10 @@ async def change_user_password(password: str, token: str, session: AsyncSession)
     hashed_password = await run_in_threadpool(get_password_hash, password)
 
     await update_user(user_id, session, password=hashed_password)
+
+
+async def update_user_status(status: str, token: str, session: AsyncSession):
+    """ User status update. Authorization required.
+    """
+    user_id, _ = await run_in_threadpool(get_user_by_token, token)
+    await update_user(user_id, session, status=status)

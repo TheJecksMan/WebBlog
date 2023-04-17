@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from core.orjson import orjson_dumps
 
 
-class ResponseToken(BaseModel):
+class Token(BaseModel):
     access_token: str
     refresh_token: str
 
@@ -12,16 +12,17 @@ class ResponseToken(BaseModel):
         json_dumps = orjson_dumps
 
 
-class ResponseAccessToken(BaseModel):
+class AccessToken(BaseModel):
     access_token: str
 
     class Config:
         json_dumps = orjson_dumps
 
 
-class ResponseCurrentUser(BaseModel):
+class CurrentUser(BaseModel):
     id: int
     username: str
+    status: str
     avatar_url: str | None
     create_at: datetime
     is_active: bool
