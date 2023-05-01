@@ -1,7 +1,7 @@
 #Tools
 autopep8
 
-alembic==1.10.3
+alembic==1.10.4
 
 # Linter
 mypy
@@ -13,4 +13,4 @@ pytest
 httpx
 
 # Database
-aiosqlite==0.18.0
+aiosqlite==0.19.0
