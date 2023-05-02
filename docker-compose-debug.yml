@@ -22,7 +22,7 @@ services:
       - database
 
   database:
-    image: postgres:15.2
+    image: postgres:15
     container_name: "database_blog"
     restart: always
     expose:
@@ -35,7 +35,7 @@ services:
       - pg-data:/var/lib/postgresql/data
   
   traefik:
-    image: traefik:v2.9.10
+    image: traefik:v2.10
     container_name: "traefik_proxy_blog"
     restart: always
     command:
