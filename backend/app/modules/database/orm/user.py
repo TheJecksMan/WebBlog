@@ -32,7 +32,8 @@ async def insert_user(session: AsyncSession, **kwargs):
     Returns:
         None
     """
-    await session.execute(insert(Users).values(**kwargs))
+    result = await session.execute(insert(Users).values(**kwargs).returning(Users.id))
+    return result.first()
 
 
 async def update_user(user_id: int, session: AsyncSession, **kwargs):

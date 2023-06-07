@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     VERSION_APP: str = "0.2.1"
 
     # Sentry
+    ENABLE_SENTRY: bool = Field(True)
     SENTRY_DSN: str
 
     # Database
@@ -22,9 +23,9 @@ class Settings(BaseSettings):
     SECRET_REFRESH_TOKEN: str
 
     # JWT ROLES
-    USER_ROLE_ID = 3
-    MODERATED_ROLE_ID = 2
-    ADMIN_ROLE_ID = 1
+    USER_ROLE_ID: int = 3
+    MODERATED_ROLE_ID: int = 2
+    ADMIN_ROLE_ID: int = 1
 
     class Config:
         env_file = "../.env"

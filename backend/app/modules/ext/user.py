@@ -45,13 +45,14 @@ async def create_user(username: str, email: str, password: str, session: AsyncSe
     """
     hashed_password = await run_in_threadpool(get_password_hash, password)
     try:
-        await insert_user(
+        user_id = await insert_user(
             session,
             username=username,
             email=email,
             password=hashed_password,
             role_id=settings.USER_ROLE_ID
         )
+        return user_id
     except IntegrityError:
         raise HTTPException(400, "Username and/or email is already in use")
 
@@ -74,7 +75,7 @@ async def search_user(user_id: int, session: AsyncSession):
     """
     user = await get_current_user(user_id, session)
     if not user:
-        raise HTTPException(400, "Unccorrect user")
+        raise HTTPException(400, "Uncorrect user")
     return user
 
 
