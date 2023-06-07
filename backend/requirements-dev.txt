@@ -1,7 +1,7 @@
 #Tools
 autopep8
 
-alembic==1.10.4
+alembic==1.11.1
 
 # Linter
 mypy
@@ -11,6 +11,7 @@ pylint
 # Testings
 pytest
 httpx
+coverage==7.2.7
 
 # Database
 aiosqlite==0.19.0
