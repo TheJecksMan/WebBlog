@@ -15,14 +15,14 @@ async def get_user(username: str, session: AsyncSession):
     Returns:
         The first user found with the given username, or None if no user is found.
     """
-    result = await session.execute(
-        select(Users.id, Users.username, Users.password, Users.is_active, Users.role_id)
+    smt = select(Users.id, Users.username, Users.password, Users.is_active, Users.role_id)\
         .where(Users.username == username)
-    )
+
+    result = await session.execute(smt)
     return result.first()
 
 
-async def insert_user(session: AsyncSession, **kwargs):
+async def insert_user(session: AsyncSession, **kwargs) -> int:
     """ Insert a new user into the database.
 
     Args:
@@ -30,13 +30,14 @@ async def insert_user(session: AsyncSession, **kwargs):
         **kwargs: The fields and values to insert into the Users table.
 
     Returns:
-        None
+        User ID
     """
-    result = await session.execute(insert(Users).values(**kwargs).returning(Users.id))
-    return result.first()
+    smt = insert(Users).values(**kwargs).returning(Users.id)
+    result = await session.execute(smt)
+    return result.first()[0]
 
 
-async def update_user(user_id: int, session: AsyncSession, **kwargs):
+async def update_user(user_id: int, session: AsyncSession, **kwargs) -> int:
     """ Update an existing user in the database.
 
     Args:
@@ -45,11 +46,11 @@ async def update_user(user_id: int, session: AsyncSession, **kwargs):
         **kwargs: The fields and values to update in the Users table.
 
     Returns:
-        None
+        User ID
     """
-    await session.execute(
-        update(Users).values(**kwargs).where(Users.id == user_id)
-    )
+    smt = update(Users).values(**kwargs).where(Users.id == user_id).returning(Users.id)
+    result = await session.execute(smt)
+    return result.first()[0]
 
 
 async def get_current_user(user_id: int, session: AsyncSession):
@@ -62,13 +63,13 @@ async def get_current_user(user_id: int, session: AsyncSession):
     Returns:
         The user with the given ID, or None if no user is found.
     """
-    result = await session.execute(
-        select(
-            Users.id, Users.username, Users.avatar_url,  Users.status,
-            Users.create_at, Users.is_active,
-            UsersRole.name, UsersRole.color
-        )
-        .join(Users.role)
+    smt = select(
+        Users.id, Users.username, Users.avatar_url,  Users.status,
+        Users.create_at, Users.is_active,
+        UsersRole.name, UsersRole.color
+    )\
+        .join(Users.role)\
         .where(Users.id == user_id)
-    )
+
+    result = await session.execute(smt)
     return result.first()

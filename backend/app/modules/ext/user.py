@@ -52,9 +52,9 @@ async def create_user(username: str, email: str, password: str, session: AsyncSe
             password=hashed_password,
             role_id=settings.USER_ROLE_ID
         )
-        return user_id
     except IntegrityError:
         raise HTTPException(400, "Username and/or email is already in use")
+    return user_id
 
 
 async def current_user(token: str, session: AsyncSession):
