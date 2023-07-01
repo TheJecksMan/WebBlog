@@ -11,9 +11,8 @@ class BasePost(BaseModel):
     id: int = Field(alias='post_id')
 
     class Config:
-        orm_mode = True
-        json_dumps = orjson_dumps
-        allow_population_by_field_name = True
+        from_attributes = True
+        populate_by_name = True
 
 
 class Post(BaseModel):
@@ -26,9 +25,8 @@ class Post(BaseModel):
     update_at: datetime | None
 
     class Config:
-        orm_mode = True
-        json_dumps = orjson_dumps
-        allow_population_by_field_name = True
+        from_attributes = True
+        populate_by_name = True
 
 
 class ListPost(BaseModel):
@@ -39,9 +37,8 @@ class ListPost(BaseModel):
     create_at: datetime
 
     class Config:
-        orm_mode = True
-        json_dumps = orjson_dumps
-        allow_population_by_field_name = True
+        from_attributes = True
+        populate_by_name = True
 
 
 class MultiplyPost(BaseModel):
@@ -49,8 +46,7 @@ class MultiplyPost(BaseModel):
     total_pages: int
 
     class Config:
-        orm_mode = True
-        json_dumps = orjson_dumps
+        from_attributes = True
 
 
 class ListAllUserPost(BaseModel):
@@ -59,8 +55,7 @@ class ListAllUserPost(BaseModel):
     create_at: datetime
 
     class Config:
-        orm_mode = True
-        json_dumps = orjson_dumps
+        from_attributes = True
 
 
 class MultiplyAllUserPost(BaseModel):
@@ -68,5 +63,4 @@ class MultiplyAllUserPost(BaseModel):
     total_pages: int
 
     class Config:
-        orm_mode = True
-        json_dumps = orjson_dumps
+        from_attributes = True
