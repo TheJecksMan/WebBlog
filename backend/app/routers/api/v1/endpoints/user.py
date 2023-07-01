@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import Query
 from fastapi import Depends
 from fastapi import APIRouter
-from fastapi.responses import ORJSONResponse as R_ORJSON
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,7 +26,6 @@ Session = Annotated[AsyncSession, Depends(get_async_session)]
 @router.get(
     "/current",
     response_model=CUser,
-    response_class=R_ORJSON,
     responses={
         400: {"model": DetailResponse},
         403: {"model": DetailResponse}
@@ -41,7 +39,6 @@ async def current_data_user(token: JWTToken, session: Session):
 @router.post(
     "",
     response_model=CUser,
-    response_class=R_ORJSON,
     responses={
         400: {"model": DetailResponse}
     })

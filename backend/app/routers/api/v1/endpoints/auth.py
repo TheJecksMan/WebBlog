@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi import APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.responses import ORJSONResponse as R_ORJSON
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,9 +32,8 @@ Session = Annotated[AsyncSession, Depends(get_async_session)]
 
 @router.post(
     "/token",
-    response_class=R_ORJSON,
+    response_model=Token,
     responses={
-        200: {"model": Token},
         400: {"model": DetailResponse},
         403: {"model": DetailResponse}
     })
@@ -45,35 +43,29 @@ async def sign_in(form_data: FormLogin, session: Session):
         form_data.password,
         session
     )
-    return R_ORJSON({
-        "access_token": access_token,
-        "refresh_token": refresh_token
-    })
+    return Token(
+        access_token=access_token,
+        refresh_token=refresh_token
+    )
 
 
 @router.post(
     "/token/refresh",
-    response_class=R_ORJSON,
+    response_model=AToken,
     responses={
-        200: {"model": AToken},
         400: {"model": DetailResponse}
     })
 async def refresh_token_user(token: RefreshToken):
     access_token = await update_token(token.refresh_token)
-    return R_ORJSON({
-        "access_token": access_token
-    })
+    return AToken(access_token=access_token)
 
 
 @router.post(
     "/registration",
-    response_class=R_ORJSON,
+    response_model=IDUser,
     responses={
-        200: {"model": IDUser},
         400: {"model": DetailResponse}
     })
 async def sign_up(body: RegistrationUser, session: Session):
     user_id = await create_user(body.username, body.email, body.password, session)
-    return R_ORJSON({
-        "user_id": user_id
-    })
+    return IDUser(user_id=user_id)

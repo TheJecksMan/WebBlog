@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import Query
 from fastapi import Depends
 from fastapi import APIRouter
-from fastapi.responses import ORJSONResponse as R_ORJSON
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,7 +37,6 @@ PostID = Annotated[int, Query(ge=1, le=100_000)]
 @router.post(
     "/create",
     response_model=BPost,
-    response_class=R_ORJSON,
     responses={
         403: {"model": DetailResponse}
     })
@@ -50,7 +48,6 @@ async def create_post(post: CUPost, token: JWTToken, session: Session):
 @router.put(
     "/update",
     response_model=BPost,
-    response_class=R_ORJSON,
     responses={
         403: {"model": DetailResponse}
     })
@@ -62,7 +59,6 @@ async def update_post(post: UUPost, token: JWTToken, session: Session):
 @router.delete(
     "/delete",
     response_model=BPost,
-    response_class=R_ORJSON,
     responses={
         403: {"model": DetailResponse}
     })
@@ -74,7 +70,6 @@ async def delete_post(id: PostID, token: JWTToken, session: Session):
 @router.get(
     "",
     response_model=Post,
-    response_class=R_ORJSON,
     responses={
         404: {"model": DetailResponse}
     })
@@ -86,7 +81,6 @@ async def get_post(id: PostID, session: Session):
 @router.get(
     "/multiply",
     response_model=MPost,
-    response_class=R_ORJSON,
     responses={
         404: {"model": DetailResponse}
     })
@@ -102,7 +96,6 @@ async def get_multiply_posts(
 @router.get(
     "/user/all",
     response_model=MAUPost,
-    response_class=R_ORJSON,
     responses={
         404: {"model": DetailResponse}
     })
