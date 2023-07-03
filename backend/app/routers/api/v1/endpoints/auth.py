@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi import APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.responses import ORJSONResponse as R_ORJSON
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,7 +16,10 @@ from modules.ext.user import authenticate_user
 from modules.schemas.user import RefreshToken
 from modules.schemas.user import RegistrationUser
 
+from modules.schemas.response.base import DetailResponse
+
 from modules.schemas.response.user import Token
+from modules.schemas.response.user import IDUser
 from modules.schemas.response.user import AccessToken as AToken
 
 
@@ -28,30 +30,42 @@ FormLogin = Annotated[OAuth2PasswordRequestForm, Depends()]
 Session = Annotated[AsyncSession, Depends(get_async_session)]
 
 
-@router.post("/token", response_model=Token, response_class=R_ORJSON)
+@router.post(
+    "/token",
+    response_model=Token,
+    responses={
+        400: {"model": DetailResponse},
+        403: {"model": DetailResponse}
+    })
 async def sign_in(form_data: FormLogin, session: Session):
     access_token, refresh_token = await authenticate_user(
         form_data.username,
         form_data.password,
         session
     )
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token
-    }
+    return Token(
+        access_token=access_token,
+        refresh_token=refresh_token
+    )
 
 
-@router.post("/token/refresh", response_model=AToken, response_class=R_ORJSON)
+@router.post(
+    "/token/refresh",
+    response_model=AToken,
+    responses={
+        400: {"model": DetailResponse}
+    })
 async def refresh_token_user(token: RefreshToken):
     access_token = await update_token(token.refresh_token)
-    return {
-        "access_token": access_token
-    }
+    return AToken(access_token=access_token)
 
 
-@router.post("/registration", response_class=R_ORJSON)
+@router.post(
+    "/registration",
+    response_model=IDUser,
+    responses={
+        400: {"model": DetailResponse}
+    })
 async def sign_up(body: RegistrationUser, session: Session):
-    await create_user(body.username, body.email, body.password, session)
-    return {
-        "detail": "Success registration!"
-    }
+    user_id = await create_user(body.username, body.email, body.password, session)
+    return IDUser(user_id=user_id)

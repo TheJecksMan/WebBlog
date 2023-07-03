@@ -6,7 +6,7 @@ from modules.database.models import Posts
 from modules.database.models import Users
 
 
-async def create_post(session: AsyncSession, **kwargs):
+async def create_post(session: AsyncSession, **kwargs) -> int:
     """ Creates a new post in the database with the provided data.
 
     Args:
@@ -16,14 +16,13 @@ async def create_post(session: AsyncSession, **kwargs):
     Returns:
         The ID of the newly created post.
     """
-    result = await session.execute(
-        insert(Posts)
-        .values(**kwargs).returning(Posts.id)
-    )
-    return result.first()
+    smt = insert(Posts).values(**kwargs).returning(Posts.id)
+
+    result = await session.execute(smt)
+    return result.first()[0]
 
 
-async def update_post(post_id: int, session: AsyncSession, **kwargs):
+async def update_post(post_id: int, session: AsyncSession, **kwargs) -> int:
     """ Updates an existing post in the database with the provided data.
 
     Args:
@@ -34,11 +33,11 @@ async def update_post(post_id: int, session: AsyncSession, **kwargs):
     Returns:
         The ID of the updated post.
     """
-    result = await session.execute(
-        update(Posts)
-        .where(Posts.id == post_id)
-        .values(**kwargs).returning(Posts.id))
-    return result.first()
+    smt = update(Posts).where(Posts.id == post_id).values(**kwargs)\
+        .returning(Posts.id)
+
+    result = await session.execute(smt)
+    return result.first()[0]
 
 
 async def get_post(post_id: int, session: AsyncSession):
@@ -51,11 +50,12 @@ async def get_post(post_id: int, session: AsyncSession):
     Returns:
         The requested post data.
     """
-    result = await session.execute(
-        select(Posts.id, Posts.title, Posts.text, Posts.create_at,
-               Users.username, Posts.reading_time)
-        .join(Users)
-        .where(Posts.id == post_id))
+    smt = select(Posts.id, Posts.title, Posts.text, Posts.create_at,
+                 Users.username, Posts.reading_time)\
+        .join(Users)\
+        .where(Posts.id == post_id)
+
+    result = await session.execute(smt)
     return result.first()
 
 
@@ -71,13 +71,13 @@ async def get_multiply_post(posts_id: int, limit: int, session: AsyncSession):
     Returns:
         A list of the requested post data.
     """
-    result = await session.execute(
-        select(Posts.id, Posts.create_at, Posts.title, Users.username, Posts.reading_time)
-        .join(Users)
-        .where(Posts.id > posts_id)
-        .order_by(Posts.create_at.desc())
+    smt = select(Posts.id, Posts.create_at, Posts.title, Users.username, Posts.reading_time)\
+        .join(Users)\
+        .where(Posts.id > posts_id)\
+        .order_by(Posts.create_at.desc())\
         .limit(limit)
-    )
+
+    result = await session.execute(smt)
     return result.all()
 
 
@@ -94,17 +94,17 @@ async def get_multiply_posts_user(user_id: int, posts_id: int, limit: int, sessi
     Returns:
         A list of the requested post data.
     """
-    result = await session.execute(
-        select(Posts.id, Posts.create_at, Posts.title)
-        .join(Users)
-        .where(Posts.id > posts_id, Posts.author == user_id)
-        .order_by(Posts.create_at.desc())
+    smt = select(Posts.id, Posts.create_at, Posts.title)\
+        .join(Users)\
+        .where(Posts.id > posts_id, Posts.author == user_id)\
+        .order_by(Posts.create_at.desc())\
         .limit(limit)
-    )
+
+    result = await session.execute(smt)
     return result.all()
 
 
-async def delete_post(post_id: int, session: AsyncSession):
+async def delete_post(post_id: int, session: AsyncSession) -> int:
     """ Deleting a requested post by its ID
 
     Args:
@@ -114,12 +114,10 @@ async def delete_post(post_id: int, session: AsyncSession):
     Returns:
         The requested post data.
     """
-    result = await session.execute(
-        delete(Posts)
-        .where(Posts.id == post_id)
-        .returning(Posts.id)
-    )
-    return result.first()
+    smt = delete(Posts).where(Posts.id == post_id).returning(Posts.id)
+
+    result = await session.execute(smt)
+    return result.first()[0]
 
 
 async def get_count_post(session: AsyncSession):
@@ -131,9 +129,9 @@ async def get_count_post(session: AsyncSession):
     Returns:
         Total number of posts.
     """
-    result = await session.execute(
-        select(func.count(Posts.id))
-    )
+    smt = select(func.count(Posts.id))
+
+    result = await session.execute(smt)
     return result.first()
 
 
@@ -147,8 +145,7 @@ async def get_count_posts_user(user_id: int, session: AsyncSession):
     Returns:
         Total number of posts.
     """
-    result = await session.execute(
-        select(func.count(Posts.id))
-        .where(Posts.author == user_id)
-    )
+    smt = select(func.count(Posts.id)).where(Posts.author == user_id)
+
+    result = await session.execute(smt)
     return result.first()

@@ -5,7 +5,7 @@ from main import app
 
 from modules.database.engine import async_session
 
-DEFAULT_PATH = "http://127.0.0.1:8000"
+DEFAULT_PATH = "http://127.0.0.1:8000/"
 
 
 @pytest.fixture

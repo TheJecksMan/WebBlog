@@ -1,12 +1,12 @@
-fastapi==0.95.1
+fastapi==0.100.0b2
 uvicorn[standard]==0.22.0
-orjson==3.8.11
+orjson==3.9.1
 
-SQLAlchemy==2.0.12
+SQLAlchemy==2.0.17
 asyncpg==0.27.0
 
-PyJWT==2.6.0
-sentry-sdk[fastapi]==1.21.1
+PyJWT==2.7.0
+sentry-sdk[fastapi]==1.26.0
 
 passlib[bcrypt]==1.7.4
 

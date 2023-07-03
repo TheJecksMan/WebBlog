@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import String
-from sqlalchemy import BIGINT
+from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
 
 from sqlalchemy.orm import Mapped
@@ -18,7 +18,7 @@ class Posts(Base):
     __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    author: Mapped[int] = mapped_column(BIGINT(), ForeignKey("users.id"), nullable=False)
+    author: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     text: Mapped[str] = mapped_column(nullable=False)
     reading_time: Mapped[int] = mapped_column(nullable=False)
@@ -29,7 +29,7 @@ class Posts(Base):
 class Users(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BIGINT(), primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     username: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
